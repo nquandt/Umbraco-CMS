@@ -16,7 +16,7 @@ internal static class LanguageFactory
 
         dto.CultureName ??= CultureInfo.GetCultureInfo(dto.IsoCode).EnglishName;
 
-        var lang = new Language(dto.IsoCode, dto.CultureName)
+        var lang = new Language(dto.IsoCode, dto.SupportedIsoCode, dto.CultureName)
         {
             Id = dto.Id,
             IsDefault = dto.IsDefault,
@@ -38,6 +38,7 @@ internal static class LanguageFactory
         var dto = new LanguageDto
         {
             IsoCode = entity.IsoCode,
+            SupportedIsoCode = entity.SupportedIsoCode,
             CultureName = entity.CultureName,
             IsDefault = entity.IsDefault,
             IsMandatory = entity.IsMandatory,

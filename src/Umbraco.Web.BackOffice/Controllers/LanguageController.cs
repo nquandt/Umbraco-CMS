@@ -30,13 +30,14 @@ public class LanguageController : UmbracoAuthorizedJsonController
         _umbracoMapper = umbracoMapper ?? throw new ArgumentNullException(nameof(umbracoMapper));
     }
 
-        /// <summary>
-        /// Returns all cultures available for creating languages.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Authorize(Policy = AuthorizationPolicies.TreeAccessLanguages)]public IDictionary<string, string> GetAllCultures()
-            => CultureInfo.GetCultures(CultureTypes.AllCultures).DistinctBy(x => x.Name).OrderBy(x => x.EnglishName).ToDictionary(x => x.Name, x => x.EnglishName);
+    /// <summary>
+    /// Returns all cultures available for creating languages.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.TreeAccessLanguages)]
+    public IDictionary<string, string> GetAllCultures()
+        => CultureInfo.GetCultures(CultureTypes.AllCultures).DistinctBy(x => x.Name).OrderBy(x => x.EnglishName).ToDictionary(x => x.Name, x => x.EnglishName);
 
     /// <summary>
     ///     Returns all currently configured languages.
@@ -127,7 +128,9 @@ public class LanguageController : UmbracoAuthorizedJsonController
             CultureInfo culture;
             try
             {
-                culture = CultureInfo.GetCultureInfo(language.IsoCode!);
+                culture = language.CustomIsoCode is not null
+                    ? CultureInfo.GetCultureInfo(language.CustomIsoCode, language.IsoCode)
+                    : CultureInfo.GetCultureInfo(language.IsoCode!);
             }
             catch (CultureNotFoundException)
             {
@@ -136,7 +139,7 @@ public class LanguageController : UmbracoAuthorizedJsonController
             }
 
             // create it (creating a new language cannot create a fallback cycle)
-            var newLang = new Core.Models.Language(culture.Name, language.Name ?? culture.EnglishName)
+            var newLang = new Core.Models.Language(language.CustomIsoCode ?? language.IsoCode, language.CustomIsoCode is not null ? language.IsoCode : null, language.Name ?? culture.EnglishName)
             {
                 IsDefault = language.IsDefault,
                 IsMandatory = language.IsMandatory,

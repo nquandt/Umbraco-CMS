@@ -26,7 +26,8 @@ public class LanguageMapDefinition : IMapDefinition
     private static void Map(ILanguage source, ContentEditing.Language target, MapperContext context)
     {
         target.Id = source.Id;
-        target.IsoCode = source.IsoCode;
+        target.IsoCode = source.SupportedIsoCode ?? source.IsoCode;
+        target.CustomIsoCode = source.SupportedIsoCode is not null ? source.IsoCode : null;
         target.Name = source.CultureName;
         target.IsDefault = source.IsDefault;
         target.IsMandatory = source.IsMandatory;

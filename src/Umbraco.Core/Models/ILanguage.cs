@@ -16,6 +16,12 @@ public interface ILanguage : IEntity, IRememberBeingDirty
     string IsoCode { get; set; }
 
     /// <summary>
+    ///     Gets or sets the ISO code of the language.
+    /// </summary>
+    [DataMember]
+    string? SupportedIsoCode { get; set; }
+
+    /// <summary>
     ///     Gets or sets the culture name of the language.
     /// </summary>
     [DataMember]

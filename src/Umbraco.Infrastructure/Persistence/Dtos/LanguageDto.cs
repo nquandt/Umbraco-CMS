@@ -28,6 +28,14 @@ internal class LanguageDto
     public string? IsoCode { get; set; }
 
     /// <summary>
+    ///     Gets or sets the ISO code of the language.
+    /// </summary>
+    [Column("languageSupportedISOCode")]    
+    [NullSetting(NullSetting = NullSettings.Null)]
+    [Length(14)]
+    public string? SupportedIsoCode { get; set; }
+
+    /// <summary>
     ///     Gets or sets the culture name of the language.
     /// </summary>
     [Column("languageCultureName")]

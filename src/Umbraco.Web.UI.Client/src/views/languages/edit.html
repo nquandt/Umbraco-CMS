@@ -19,6 +19,18 @@
 
                 <umb-box>
                     <umb-box-content>
+                        <umb-control-group label="@languages_culture">
+                            <input type="text"
+                               id="newCustomLang"
+                               class="input"
+                               localize="placeholder"
+                               placeholder="@placeholders_entername"
+                               data-element="editor-name-field"
+                               name="newCustomLang"                               
+                               ng-model="vm.language.customCulture"                                                                                             
+                               val-server-field="CustomIsoCode"                                                                                             
+                               maxlength="255"/>
+                        </umb-control-group>
 
                         <umb-control-group label="@general_language" required="true">
                             <select name="newLang"

@@ -16,6 +16,7 @@ public class Language : EntityBase, ILanguage
     private string? _fallbackLanguageIsoCode;
     private bool _isDefaultVariantLanguage;
     private string _isoCode;
+    private string? _backingIsoCode;
     private bool _mandatory;
 
     /// <summary>
@@ -29,16 +30,42 @@ public class Language : EntityBase, ILanguage
         _cultureName = cultureName ?? throw new ArgumentNullException(nameof(cultureName));
     }
 
-        /// <inheritdoc />
-        [DataMember]
-        public string IsoCode
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Language" /> class.
+    /// </summary>
+    /// <param name="localeCode">The UserDefined ISO code of the language.</param>
+    /// <param name="supportedIsoCode">The CLDR supported ISO code of the language.</param>
+    /// <param name="cultureName">The name of the language.</param>
+    public Language(string localeCode, string? supportedIsoCode, string cultureName)
+    {
+        _isoCode = localeCode ?? throw new ArgumentNullException(nameof(localeCode));
+        _backingIsoCode = supportedIsoCode;
+        _cultureName = cultureName ?? throw new ArgumentNullException(nameof(cultureName));
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public string IsoCode
+    {
+        get => _isoCode;
+        set
         {
-            get => _isoCode;
-            set
-            {
-                ArgumentNullException.ThrowIfNull(value);
+            ArgumentNullException.ThrowIfNull(value);
 
             SetPropertyValueAndDetectChanges(value, ref _isoCode!, nameof(IsoCode));
+        }
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public string? SupportedIsoCode
+    {
+        get => _backingIsoCode;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+
+            SetPropertyValueAndDetectChanges(value, ref _backingIsoCode!, nameof(IsoCode));
         }
     }
 
@@ -57,7 +84,21 @@ public class Language : EntityBase, ILanguage
 
     /// <inheritdoc />
     [IgnoreDataMember]
-    public CultureInfo? CultureInfo => IsoCode is not null ? CultureInfo.GetCultureInfo(IsoCode) : null;
+    public CultureInfo? CultureInfo
+    {
+        get
+        {
+            if (IsoCode is not null)
+            {
+                if (_backingIsoCode is not null)
+                {
+                    return CultureInfo.GetCultureInfo(IsoCode, _backingIsoCode);
+                }
+                return CultureInfo.GetCultureInfo(IsoCode);
+            }
+            return null;
+        }
+    }
 
     /// <inheritdoc />
     public bool IsDefault

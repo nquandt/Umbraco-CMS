@@ -13,6 +13,9 @@ public class Language
     [Required(AllowEmptyStrings = false)]
     public string IsoCode { get; set; } = null!;
 
+    [DataMember(Name = "CustomCulture")]
+    public string? CustomIsoCode { get; set; }
+
     [DataMember(Name = "name")]
     public string? Name { get; set; }
 
